@@ -9,6 +9,6 @@ public record JwtResponse(
         String refreshToken,
         Long id,
         String username,
-        String email,
-        Set<Role> roles
+        String email
+//        Set<Role> roles
 ) {}

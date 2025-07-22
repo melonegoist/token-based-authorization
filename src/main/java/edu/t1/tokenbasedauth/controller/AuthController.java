@@ -1,25 +1,24 @@
 package edu.t1.tokenbasedauth.controller;
 
-import edu.t1.tokenbasedauth.CustomUserDetailsService;
 import edu.t1.tokenbasedauth.config.JwtUtils;
 import edu.t1.tokenbasedauth.dto.JwtResponse;
 import edu.t1.tokenbasedauth.dto.SignInRequest;
 import edu.t1.tokenbasedauth.dto.SignUpRequest;
+import edu.t1.tokenbasedauth.model.Role;
 import edu.t1.tokenbasedauth.model.User;
 import edu.t1.tokenbasedauth.repository.UserRepository;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -37,12 +36,18 @@ public class AuthController {
         if (userRepository.existsByLogin(request.login())) return ResponseEntity.badRequest().body("Username already exists!");
         if (userRepository.existsByEmail(request.email())) return  ResponseEntity.badRequest().body("Email already in use!");
 
-        User user = new User();
+        User user = User.builder()
+                .login(request.login())
+                .email(request.email())
+                .password(handlePassword(request.password()))
+                .roles(Set.of(Role.GUEST))
+                .build();
 
-        user.setLogin(request.login());
-        user.setEmail(request.email());
-        user.setPassword(handlePassword(request.password()));
-        user.setRoles(request.roles());
+
+//        user.setLogin(request.login());
+//        user.setEmail(request.email());
+//        user.setPassword(handlePassword(request.password()));
+//        user.setRoles(request.roles());
 
         userRepository.save(user);
 
@@ -51,40 +56,41 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> signIn(@RequestBody SignInRequest request) {
+        System.out.println("AuthenticationManager class: " + authenticationManager.getClass());
+
         var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.login(), request.password()));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         User user = (User) auth.getPrincipal();
-        CustomUserDetailsService userDetailsService = new CustomUserDetailsService(user);
+//        CustomUserDetailsService userDetailsService = new CustomUserDetailsService(user);
 
         // TODO
-        String token = jwtUtils.generateToken(userDetailsService);
-        String refreshToken = jwtUtils.generateRefreshToken(userDetailsService);
+        String token = jwtUtils.generateToken(user);
+        String refreshToken = jwtUtils.generateRefreshToken(user);
 
         return ResponseEntity.ok(new JwtResponse(
                 token,
                 refreshToken,
                 user.getId(),
-                user.getLogin(),
-                user.getEmail(),
-                user.getRoles()
+                user.getUsername(),
+                user.getEmail()
         ));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<JwtResponse> refreshToken(@RequestBody String refreshToken) {
-        String login = jwtUtils.getLoginFromToken(refreshToken);
+        String login = jwtUtils.extractLogin(refreshToken);
         User user = userRepository.findByLogin(login).orElseThrow();
-        CustomUserDetailsService userDetailsService = new CustomUserDetailsService(user);
-        String newToken = jwtUtils.generateToken(userDetailsService);
+
+        String newToken = jwtUtils.generateToken(user);
 
         return ResponseEntity.ok(new JwtResponse(
                 newToken,
                 refreshToken,
                 user.getId(),
-                user.getLogin(),
-                user.getEmail(),
-                user.getRoles()
+                user.getUsername(),
+                user.getEmail()
+                // user.getRoles()
         ));
     }
 

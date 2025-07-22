@@ -23,8 +23,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractToken(request);
 
-        if (token != null && jwtUtils.validateToken(token)) {
-            String login = jwtUtils.getLoginFromToken(token);
+        if (token != null && jwtUtils.isTokenValid(token, userDetailsService.loadUserByUsername(jwtUtils.extractLogin(token)))) {
+            String login = jwtUtils.extractLogin(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(login);
 
             var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

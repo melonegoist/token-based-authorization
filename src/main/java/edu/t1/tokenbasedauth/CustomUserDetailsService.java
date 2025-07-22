@@ -1,35 +1,21 @@
 package edu.t1.tokenbasedauth;
 
-import edu.t1.tokenbasedauth.model.User;
 import edu.t1.tokenbasedauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
+@Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetails {
+public class CustomUserDetailsService implements UserDetailsService {
 
-    private final User user;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-                .collect(Collectors.toList());
-    }
+    private final UserRepository userRepository;
 
     @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.getLogin();
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
 }
