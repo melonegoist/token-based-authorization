@@ -40,14 +40,8 @@ public class AuthController {
                 .login(request.login())
                 .email(request.email())
                 .password(handlePassword(request.password()))
-                .roles(Set.of(Role.GUEST))
+                .roles(request.roles())
                 .build();
-
-
-//        user.setLogin(request.login());
-//        user.setEmail(request.email());
-//        user.setPassword(handlePassword(request.password()));
-//        user.setRoles(request.roles());
 
         userRepository.save(user);
 
@@ -56,15 +50,11 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> signIn(@RequestBody SignInRequest request) {
-        System.out.println("AuthenticationManager class: " + authenticationManager.getClass());
-
         var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.login(), request.password()));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         User user = (User) auth.getPrincipal();
-//        CustomUserDetailsService userDetailsService = new CustomUserDetailsService(user);
 
-        // TODO
         String token = jwtUtils.generateToken(user);
         String refreshToken = jwtUtils.generateRefreshToken(user);
 
@@ -73,7 +63,8 @@ public class AuthController {
                 refreshToken,
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRoles()
         ));
     }
 
@@ -89,8 +80,8 @@ public class AuthController {
                 refreshToken,
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
-                // user.getRoles()
+                user.getEmail(),
+                user.getRoles()
         ));
     }
 

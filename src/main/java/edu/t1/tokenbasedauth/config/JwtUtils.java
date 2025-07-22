@@ -8,7 +8,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -31,11 +30,7 @@ public class JwtUtils {
         Map<String, Object> claims = new HashMap<>();
 
         if (userDetails instanceof User user) {
-//            claims.put("roles", user.getRoles().stream()
-//                    .map(Role::name)
-//                    .collect(Collectors.toList()));
-
-//            claims.put("roles", Set.of("GUEST"));
+            claims.put("roles", user.getRoles());
             claims.put("email", user.getEmail());
             claims.put("userId",  user.getId());
         }
@@ -57,24 +52,6 @@ public class JwtUtils {
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
-
-//    public boolean validateToken(String token) {
-//        try {
-//            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-//
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
-//
-//    public String getLoginFromToken(String token) {
-//        return Jwts.parser()
-//                .setSigningKey(jwtSecret)
-//                .parseClaimsJws(token)
-//                .getBody()
-//                .getSubject();
-//    }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
@@ -108,6 +85,7 @@ public class JwtUtils {
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
     }
 
+    //TODO
     public Set<Role> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
 
