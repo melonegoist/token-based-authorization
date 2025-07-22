@@ -4,7 +4,6 @@ import edu.t1.tokenbasedauth.config.JwtUtils;
 import edu.t1.tokenbasedauth.dto.JwtResponse;
 import edu.t1.tokenbasedauth.dto.SignInRequest;
 import edu.t1.tokenbasedauth.dto.SignUpRequest;
-import edu.t1.tokenbasedauth.model.Role;
 import edu.t1.tokenbasedauth.model.User;
 import edu.t1.tokenbasedauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,15 +30,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest request) {
-        if (userRepository.existsByLogin(request.login())) return ResponseEntity.badRequest().body("Username already exists!");
-        if (userRepository.existsByEmail(request.email())) return  ResponseEntity.badRequest().body("Email already in use!");
+        if (userRepository.existsByLogin(request.login()))
+            return ResponseEntity.badRequest().body("Username already exists!");
+        if (userRepository.existsByEmail(request.email()))
+            return ResponseEntity.badRequest().body("Email already in use!");
 
-        User user = User.builder()
-                .login(request.login())
-                .email(request.email())
-                .password(handlePassword(request.password()))
-                .roles(request.roles())
-                .build();
+        User user = User.builder().login(request.login()).email(request.email()).password(handlePassword(request.password())).roles(request.roles()).build();
 
         userRepository.save(user);
 
@@ -58,14 +52,7 @@ public class AuthController {
         String token = jwtUtils.generateToken(user);
         String refreshToken = jwtUtils.generateRefreshToken(user);
 
-        return ResponseEntity.ok(new JwtResponse(
-                token,
-                refreshToken,
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRoles()
-        ));
+        return ResponseEntity.ok(new JwtResponse(token, refreshToken, user.getId(), user.getUsername(), user.getEmail(), user.getRoles()));
     }
 
     @PostMapping("/refresh")
@@ -75,14 +62,7 @@ public class AuthController {
 
         String newToken = jwtUtils.generateToken(user);
 
-        return ResponseEntity.ok(new JwtResponse(
-                newToken,
-                refreshToken,
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRoles()
-        ));
+        return ResponseEntity.ok(new JwtResponse(newToken, refreshToken, user.getId(), user.getUsername(), user.getEmail(), user.getRoles()));
     }
 
     @PostMapping("/logout")
