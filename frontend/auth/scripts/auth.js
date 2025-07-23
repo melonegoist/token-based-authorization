@@ -24,7 +24,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             password: password
         };
         
-        fetch('http://localhost:8081/api/auth/signin', {
+        fetch('http://melon-egoist.ru:8081/api/auth/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
                 let roleSet = data.roles;
 
                 if (roleSet.includes("ADMIN")) {
-                    fetch(`http://localhost:8081/api/admin/confirm-status?login=${data.login}`, {
+                    fetch(`http://melon-egoist.ru:8081/api/admin/confirm-status?login=${data.login}`, {
                         method: "GET",
                         headers: {
                             'Authorization': `Bearer ${data.token}`
@@ -70,7 +70,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
                 }
 
                 if (roleSet.includes("PREMIUM_USER")) {
-                    fetch(`http://localhost:8081/api/premium/confirm-status?login=${data.login}`, {
+                    fetch(`http://melon-egoist.ru:8081/api/premium/confirm-status?login=${data.login}`, {
                         method: "GET",
                         headers: {
                             'Authorization': `Bearer ${data.token}`

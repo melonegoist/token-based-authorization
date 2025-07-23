@@ -7,6 +7,9 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
+
+    const isAdmin = document.getElementById('admin-sub').checked;
+    const isPremium = document.getElementById('premium-sub').checked;
     
     let isValid = true;
     
@@ -30,16 +33,22 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         document.getElementById('confirmPasswordError').style.display = 'block';
         isValid = false;
     }
+
+    const roles = ["GUEST"];
+
+    if (isAdmin) roles.push("ADMIN");
+    if (isPremium) roles.push("PREMIUM_USER");
+
     
     if (isValid) {
         const formData = {
             login: login,
             email: email,
             password: password,
-            roles: ["GUEST", "ADMIN"]
+            roles: roles
         };
         
-        fetch('http://localhost:8081/api/auth/signup', {
+        fetch('http://melon-egoist.ru:8081/api/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
