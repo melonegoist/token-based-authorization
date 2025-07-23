@@ -36,7 +36,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
             login: login,
             email: email,
             password: password,
-            roles: ["GUEST"]
+            roles: ["GUEST", "ADMIN"]
         };
         
         fetch('http://localhost:8081/api/auth/signup', {

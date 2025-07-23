@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Paint</title>
+    <link rel="stylesheet" href="paint.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Простой Paint</h1>
+        
+        <div class="user-info">
+            Текущий пользователь: <span id="username"></span>
+            <span id="userRole" class="user-role role-guest">Гость</span>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="paintCanvas" width="800" height="500"></canvas>
+        </div>
+        
+        <div class="controls">
+            <!-- Основные цвета (доступны всем) -->
+            <div class="color-btn" style="background: #ffffff; border: 1px solid #ddd;" data-color="#ffffff"></div>
+            <div class="color-btn" style="background: #000000;" data-color="#000000"></div>
+            <div class="color-btn" style="background: #ff0000;" data-color="#ff0000"></div>
+            <div class="color-btn" style="background: #00ff00;" data-color="#00ff00"></div>
+            <div class="color-btn" style="background: #0000ff;" data-color="#0000ff"></div>
+            <div class="color-btn" style="background: #ffff00;" data-color="#ffff00"></div>
+            <div class="color-btn" style="background: #ff00ff;" data-color="#ff00ff"></div>
+            <div class="color-btn" style="background: #00ffff;" data-color="#00ffff"></div>
+            
+            <!-- Дополнительные цвета (только для премиум) -->
+            <div class="color-btn premium-color" style="background: #8b0000;" data-color="#8b0000"></div>
+            <div class="color-btn premium-color" style="background: #006400;" data-color="#006400"></div>
+            <div class="color-btn premium-color" style="background: #00008b;" data-color="#00008b"></div>
+            <div class="color-btn premium-color" style="background: #ff8c00;" data-color="#ff8c00"></div>
+            <div class="color-btn premium-color" style="background: #9400d3;" data-color="#9400d3"></div>
+            <div class="color-btn premium-color" style="background: #ff1493;" data-color="#ff1493"></div>
+            <div class="color-btn premium-color" style="background: #00ced1;" data-color="#00ced1"></div>
+            <div class="color-btn premium-color" style="background: #d3d3d3;" data-color="#d3d3d3"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="clearBtn" class="action-btn">Очистить холст</button>
+            <button id="saveBtn" class="action-btn" disabled>Сохранить рисунок &#13;&#10; (admin only)</button>
+        </div>
+    </div>
+    
+    <div class="login-section">
+        <p>Типы пользователя:</p>
+        <br>
+        <button class="login-btn" data-role="guest">Гость (8 цветов)</button>
+        <button class="login-btn" data-role="premium">Премиум (16 цветов)</button>
+        <button class="login-btn" data-role="admin">Админ (16 цветов + сохранение)</button>
+    </div>
+
+    <br>
+
+    <button id="logout-bttn" style="border-color: brown; color: #fff; border-radius: 10px; background-color:lightcoral; width: 200px; height: 25px; margin: 20px;">Выйти из аккаунта</button>
+
+    <script src="paint.js"></script>
+</body>
+</html>
