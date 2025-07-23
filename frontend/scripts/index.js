@@ -64,7 +64,7 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         .then(data => {
             document.getElementById('registrationForm').style.display = 'none';
             document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('loginMessage').innerHTML = 'Теперь вы можете <a href="auth.html">войти</a>!'
+            document.getElementById('loginMessage').innerHTML = 'Теперь вы можете <a href="auth">войти</a>!'
             
             console.log('Успех:', data);
         })
