@@ -85,7 +85,6 @@ public class JwtUtils {
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
     }
 
-    //TODO
     public Set<Role> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
 
