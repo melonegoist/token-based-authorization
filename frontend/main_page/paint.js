@@ -127,7 +127,7 @@ function updateUI() {
 
 logoutBttn.addEventListener('click', function() {
     localStorage.clear();
-    location.href="http://localhost:5500/frontend"  
+    location.href="http://melon-egoist.ru/t1ht4"  
 })
 
 window.addEventListener('load', function() {

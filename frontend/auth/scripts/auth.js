@@ -70,7 +70,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
                 }
 
                 if (roleSet.includes("PREMIUM_USER")) {
-                    fetch(`http://localhost:8081/api/admin/confirm-status?login=${data.login}`, {
+                    fetch(`http://localhost:8081/api/premium/confirm-status?login=${data.login}`, {
                         method: "GET",
                         headers: {
                             'Authorization': `Bearer ${data.token}`
@@ -93,7 +93,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             }
             
             setTimeout(() => {
-                window.location.href = 'http://localhost:5500/frontend/main_page/';
+                window.location.href = 'http://melon-egoist.ru/t1ht4/main_page';
             }, 2000);
         })
         .catch(error => {
