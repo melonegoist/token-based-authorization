@@ -43,10 +43,57 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             
             if (data.token) {
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('login', data.login);
+                
+                let roleSet = data.roles;
+
+                if (roleSet.includes("ADMIN")) {
+                    fetch(`http://localhost:8081/api/admin/confirm-status?login=${data.login}`, {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `Bearer ${data.token}`
+                        }
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log("error occured")
+                        }
+
+                        return response.text()
+
+                    }).then(data => {
+                        console.log(data)
+
+                        if (data == "Admin status confirmed") {
+                            localStorage.setItem("isAdmin", "true")
+                        }
+                    })
+                }
+
+                if (roleSet.includes("PREMIUM_USER")) {
+                    fetch(`http://localhost:8081/api/admin/confirm-status?login=${data.login}`, {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `Bearer ${data.token}`
+                        }
+                    }).then(response => {
+                        if (!response.ok) {
+                            console.log("error occured")
+                        }
+
+                        return response.text()
+
+                    }).then(data => {
+                        console.log(data)
+
+                        if (data == "Premium status confirmed") {
+                            localStorage.setItem("isPremium", "true")
+                        }
+                    })
+                }
             }
             
             setTimeout(() => {
-                window.location.href = 'profile.html';
+                window.location.href = 'http://localhost:5500/frontend/main_page/';
             }, 2000);
         })
         .catch(error => {
