@@ -8,7 +8,7 @@ public record JwtResponse(
         String token,
         String refreshToken,
         Long id,
-        String username,
+        String login, // TODO here was username
         String email,
         Set<Role> roles
 ) {}
